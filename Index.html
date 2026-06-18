@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakesh AI Python Runner</title>
+    <!-- బ్రౌజర్‌లోనే పైథాన్ రన్ చేయడానికి CDN లింక్ -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #007bc2; text-align: center; }
+        button { background-color: #007bc2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #005990; }
+        #output { background: #222; color: #00ff00; padding: 15px; border-radius: 5px; min-height: 100px; white-space: pre-wrap; font-family: monospace; margin-top: 20px; }
+        .loading { color: #ff9900; font-weight: bold; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>My AI Python Code Runner</h1>
+    <p style="text-align: center; color: #666;">Click the button below to execute the Python code directly in your browser!</p>
+    
+    <div id="loading-status" class="loading">Loading Python Environment... Please wait.</div>
+    <button id="run-btn" onclick="runPython()" disabled>Run Python Code</button>
+    
+    <h3>Output Terminal:</h3>
+    <div id="output">Terminal logs will appear here...</div>
+</div>
+
+<script>
+    let pyodideInstance;
+
+    // పైథాన్ ఎన్విరాన్‌మెంట్ బ్యాక్‌గ్రౌండ్‌లో లోడ్ అవుతుంది
+    async function initPyodide() {
+        pyodideInstance = await loadPyodide();
+        document.getElementById('loading-status').style.display = 'none';
+        document.getElementById('run-btn').disabled = false;
+    }
+    initPyodide();
+
+    async function runPython() {
+        let outputDiv = document.getElementById("output");
+        outputDiv.innerText = "Running...\n";
+        
+        // ఇక్కడ కింద ఉన్న ట్రిపుల్ కోట్స్ మధ్యలో మీ codsoft1.py లోని పైథాన్ కోడ్‌ను పేస్ట్ చేయండి
+        let pythonCodedef process_user_inquiry(user_message):
+    message_sanitized = user_message.strip().lower()
+    
+    if any(keyword in message_sanitized for keyword in ["hello", "hi", "greetings"]):
+        return "Greetings! How may I assist you today?"
+    elif "bot identity" in message_sanitized:
+        return "I am a custom rule-based conversational agent engineered for the CodSoft internship."
+    elif "status" in message_sanitized:
+        return "Operational status nominal. How are you functioning?"
+    elif "exit" in message_sanitized:
+        return "Terminating session. Have a productive day ahead!"
+    else:
+        return "Unrecognized command. Could you please rephrase the statement?"
+
+print("CodSoft Assistant: Initialization complete. Type 'exit' to terminate.")
+while True:
+    try:
+        user_input = input("User >> ")
+        if "exit" in user_input.lower():
+            print("CodSoft Assistant:", process_user_inquiry(user_input))
+            break
+        print("CodSoft Assistant:", process_user_inquiry(user_input))
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+# మీ ఒరిజినల్ పైథాన్ కోడ్‌ను ఇక్కడ పేస్ట్ చేసుకోండి
+print("Hello Rakesh!")
+print("Your Artificial Intelligence Python code is running successfully on this website!")
+
+# ఉదాహరణకు ఒక చిన్న లూప్
+for i in range(1, 6):
+    print(f"Executing AI Task iteration {i}...")
+`;
+
+        try {
+            // పైథాన్ ప్రింట్ స్టేట్‌మెంట్లను బ్రౌజర్‌లో చూపించడానికి రీడైరెక్ట్ చేస్తున్నాం
+            pyodideInstance.runPython(`
+                import sys
+                import io
+                sys.stdout = io.StringIO()
+            `);
+            
+            await pyodideInstance.runPythonAsync(pythonCode);
+            
+            let stdout = pyodideInstance.runPython("sys.stdout.getvalue()");
+            outputDiv.innerText = stdout;
+        } catch (err) {
+            outputDiv.innerText = "Error in Python Code:\n" + err;
+        }
+    }
+</script>
+
+</body>
+</html>
